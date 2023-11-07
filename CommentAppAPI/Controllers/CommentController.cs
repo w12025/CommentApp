@@ -1,53 +1,50 @@
 using Microsoft.AspNetCore.Mvc;
 using CommentAppAPI.Model;
+using CommentAppAPI.Repository;
 
-namespace CommentAppAPI.Controllers
+namespace CommentAppAPI.Controllers;
+
+[ApiController]
+[Route("api/v1/comments")]
+public class CommentController : ControllerBase
 {
-    [ApiController]
-    [Route("api/v1/")]
-    public class CommentController : ControllerBase
+    private readonly ICommentRepository _commentRepository;
+
+    public CommentController(ICommentRepository commentRepository)
     {
-        private readonly ILogger<CommentController> _logger;
+        _commentRepository = commentRepository;
+    }
 
-        public CommentController(ILogger<CommentController> logger)
-        {
-            _logger = logger;
-        }
+    [HttpGet]
+    public IEnumerable<Comment> GetAll()
+    {
+        return _commentRepository.GetComments();
+    }
 
-        [HttpGet]
-        [Route("comments")]
-        public IEnumerable<Comment> Get()
-        {
-            return null;
-        }
+    [HttpGet]
+    [Route("/{id}")]
+    public Comment Get(int id)
+    {
+        return _commentRepository.GetCommentById(id);
+    }
 
-        [HttpGet]
-        [Route("comments/{id}")]
-        public Comment Get(int id)
-        {
-            return new Comment() { Id = id };
-        }
+    [HttpPost]
+    public Comment Insert(Comment comment)
+    {
+        return _commentRepository.InsertComment(comment);
+    }
 
-        [HttpPost]
-        [Route("comments")]
-        public Comment Post(Comment comment)
-        {
-            return null;
-        }
+    [HttpPut]
+    public Comment Update(Comment comment)
+    {
+        return _commentRepository.UpdateComment(comment);
+    }
 
-        [HttpPut]
-        [Route("comments/{id}")]
-        public Comment Put(int id, Comment comment)
-        {
-            return null;
-        }
-
-        [HttpDelete]
-        [Route("comments/{id}")]
-        public String Delete(int id)
-        {
-            return "DELETED";   
-        }
-
+    [HttpDelete]
+    [Route("/{id}")]
+    public String Delete(int id)
+    {
+        _commentRepository.DeleteComment(id);
+        return "DELETED";
     }
 }
