@@ -16,7 +16,7 @@ public class CommentRepository : ICommentRepository
     {
         var comment = _dbContext.Comment.Find(commentId);
         _dbContext.Comment.Remove(comment ?? throw new NullReferenceException("Comment Not Found"));
-        Save();
+        _dbContext.SaveChanges();
     }
 
     public Comment GetCommentById(int commentId)
@@ -29,23 +29,20 @@ public class CommentRepository : ICommentRepository
         return _dbContext.Comment.ToList();
     }
 
-    public Comment InsertComment(Comment comment)
+    public int InsertComment(Comment comment)
     {
-        _dbContext.Add(comment);
-        Save();
-        return _dbContext.Comment.Find(comment.Id) ?? throw new NullReferenceException();
-    }
+        Comment newComment = new Comment();
+        newComment.MapForInsert(comment);
 
-    private void Save()
-    {
+        _dbContext.Add(newComment);
         _dbContext.SaveChanges();
+        return newComment.Id;
     }
 
-    public Comment UpdateComment(Comment comment)
+    public void UpdateComment(Comment comment)
     {
         _dbContext.Entry(comment).State =
             Microsoft.EntityFrameworkCore.EntityState.Modified;
-        Save();
-        return _dbContext.Comment.Find(comment.Id) ?? throw new NullReferenceException("Comment Not Found");
+        _dbContext.SaveChanges();
     }
 }

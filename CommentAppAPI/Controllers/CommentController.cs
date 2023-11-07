@@ -22,26 +22,28 @@ public class CommentController : ControllerBase
     }
 
     [HttpGet]
-    [Route("/{id}")]
+    [Route("{id}")]
     public Comment Get(int id)
     {
         return _commentRepository.GetCommentById(id);
     }
 
     [HttpPost]
-    public Comment Insert(Comment comment)
+    public string Insert(Comment comment)
     {
-        return _commentRepository.InsertComment(comment);
+        int id = _commentRepository.InsertComment(comment);
+        return "ADDED WITH ID = " + id;
     }
 
     [HttpPut]
-    public Comment Update(Comment comment)
+    public string Update(Comment comment)
     {
-        return _commentRepository.UpdateComment(comment);
+        _commentRepository.UpdateComment(comment);
+        return "UPDATED";
     }
 
     [HttpDelete]
-    [Route("/{id}")]
+    [Route("{id}")]
     public String Delete(int id)
     {
         _commentRepository.DeleteComment(id);
